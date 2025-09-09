@@ -1,0 +1,28 @@
+# Build outputs
+**/bin/
+**/obj/
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider / IntelliJ
+.idea/
+
+# VSCode workspace settings (optional — keep if you want to share)
+.vscode/
+
+# NuGet / packaging
+*.nupkg
+packages/
+project.lock.json
+artifacts/
+
+# Test results
+TestResults/
+
+# Misc
+*.log
