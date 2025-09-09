@@ -5,13 +5,14 @@ namespace LuneDB
     {
         public static void Main(string[] args)
         {
-            // string? TokenType = Console.ReadLine();
-            // string? TokenValue = Console.ReadLine();
+            string userinput = "this is a test";
 
-            Token token = new Token(Token.TokenType.ADD, "+");
+            Lexer tokens = new Lexer(userinput).Tokenize();
 
-            Console.WriteLine(token.ToString());
-
+            foreach (Token token in tokens.tokens)
+            {
+                Console.WriteLine(token.ToString());
+            }
         }
     }
 }

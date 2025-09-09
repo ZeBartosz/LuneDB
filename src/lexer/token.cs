@@ -4,16 +4,15 @@ namespace LuneDB
     {
         public enum TokenType
         {
-            ADD,
-            SUBTRACT,
-            MULTIPLY,
-            DIVIDE,
-            LEFT_PAREN,
-            RIGHT_PAREN,
+            TABLE,
+            COLUMN,
+            KEYWORD,
+            IDENTIFIER,
             NUMBER,
             STRING,
-            IDENTIFIER,
-            EOF
+
+            ERROR,
+            EOF,
         }
 
         public TokenType Type { get; set; }
