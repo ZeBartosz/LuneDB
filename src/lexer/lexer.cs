@@ -4,25 +4,21 @@ namespace LuneDB
 {
     public class Lexer
     {
-        public List<Regex> patterns;
-        public List<Token> tokens;
-        public string input;
-        public int position;
+        private List<(Regex regex, Token.TokenType type)> patterns;
+        private List<Token> tokens;
+        private string input;
+        private int position;
 
         public Lexer(string userInput)
         {
             input = userInput;
             position = 0;
             tokens = new List<Token>();
-            patterns = new List<Regex>
+            patterns = new List<(Regex, Token.TokenType)>
             {
-                new Regex(@"\s+", RegexOptions.Compiled),
-                new Regex(@"\d+", RegexOptions.Compiled),
-                new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled),
-                new Regex(@"==|!=|<=|>=|<|>", RegexOptions.Compiled),
-                new Regex(@"\+|-|\*|/", RegexOptions.Compiled),
-                new Regex(@"\(|\)|\[|\]|\{|\}", RegexOptions.Compiled),
-                new Regex(@";", RegexOptions.Compiled)
+                (new Regex(@"\s+", RegexOptions.Compiled), Token.TokenType.WHITESPACE),
+                (new Regex(@"\d+", RegexOptions.Compiled), Token.TokenType.NUMBER),
+                (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled), Token.TokenType.IDENTIFIER),
             };
         }
 
@@ -67,12 +63,13 @@ namespace LuneDB
             {
                 bool matched = false;
 
-                foreach (Regex pattern in patterns)
+                foreach (var pattern in patterns)
                 {
-                    Match match = pattern.Match(this.input, position);
+                    var match = pattern.regex.Match(this.input, position);
+
                     if (match.Success && match.Index == position)
                     {
-                        if (match.Value.Equals(" ") || match.Length == 0)
+                        if (pattern.type == Token.TokenType.WHITESPACE || match.Length == 0)
                         {
                             lexer.advance(match.Length);
                             continue;
@@ -80,7 +77,7 @@ namespace LuneDB
                         matched = true;
                         lexer.advance(match.Length);
 
-                        lexer.push(new Token(Token.TokenType.IDENTIFIER, match.Value));
+                        lexer.push(new Token(pattern.type, match.Value));
                         break;
                     }
                 }

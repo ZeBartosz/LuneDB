@@ -5,7 +5,7 @@ namespace LuneDB
     {
         public static void Main(string[] args)
         {
-            string userinput = "this is a test";
+            string userinput = "this is a test   1231 312 qqq";
 
             Lexer tokens = new Lexer(userinput).Tokenize();
 

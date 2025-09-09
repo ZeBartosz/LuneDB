@@ -12,6 +12,9 @@ namespace LuneDB
             STRING,
 
             ERROR,
+
+            // Misc
+            WHITESPACE,
             EOF,
         }
 
