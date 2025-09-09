@@ -4,10 +4,10 @@ namespace LuneDB
 {
     public class Lexer
     {
-        private List<(Regex regex, Token.TokenType type)> patterns;
-        private List<Token> tokens;
-        private string input;
-        private int position;
+        public List<(Regex regex, Token.TokenType type)> patterns;
+        public List<Token> tokens;
+        public string input;
+        public int position;
 
         public Lexer(string userInput)
         {
