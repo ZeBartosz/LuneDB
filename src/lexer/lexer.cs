@@ -21,13 +21,9 @@ namespace LuneDB
                 (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled), Token.TokenType.IDENTIFIER),
             };
         }
-
-
         public void advance(int amount)
         {
             position += amount;
-
-
         }
 
         public void push(Token token)
@@ -55,6 +51,21 @@ namespace LuneDB
             return $"Lexer(input='{input}', position={position}, tokens={tokens})";
         }
 
+
+        public Token.TokenType handleIndentifier(string value)
+        {
+            switch (value)
+            {
+                case "CREATE":
+                    return Token.TokenType.CREATE;
+                case "TABLE":
+                    return Token.TokenType.TABLE;
+                default:
+                    return Token.TokenType.IDENTIFIER;
+            }
+
+        }
+
         public Lexer Tokenize()
         {
             Lexer lexer = this;
@@ -76,6 +87,13 @@ namespace LuneDB
                         }
                         matched = true;
                         lexer.advance(match.Length);
+
+                        if (pattern.type == Token.TokenType.IDENTIFIER)
+                        {
+                            Token.TokenType type = handleIndentifier(match.Value);
+                            lexer.push(new Token(type, match.Value));
+                            break;
+                        }
 
                         lexer.push(new Token(pattern.type, match.Value));
                         break;
