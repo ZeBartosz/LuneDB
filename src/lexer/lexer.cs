@@ -19,7 +19,13 @@ namespace LuneDB
                 (new Regex(@"\s+", RegexOptions.Compiled), Token.TokenType.WHITESPACE),
                 (new Regex(@"\d+", RegexOptions.Compiled), Token.TokenType.NUMBER),
                 (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled), Token.TokenType.IDENTIFIER),
-                (new Regex(@"[(]"), Token.TokenType.LEFT_PAREN)
+                (new Regex(@"[(]"), Token.TokenType.LEFT_PAREN),
+                (new Regex(@"[)]"), Token.TokenType.RIGHT_PAREN),
+                (new Regex(@"[{]"), Token.TokenType.LEFT_BRACE),
+                (new Regex(@"[}]"), Token.TokenType.RIGHT_BRACE),
+                (new Regex(@"[[]"), Token.TokenType.LEFT_BRACKET),
+                (new Regex(@"[]]"), Token.TokenType.RIGHT_BRACKET),
+
             };
         }
         public void advance(int amount)
@@ -102,7 +108,7 @@ namespace LuneDB
                 }
                 if (!matched)
                 {
-                    throw new Exception($"LEXER_ERROR: Token \' {lexer.at().ToString()} \' unrecognised");
+                    throw new Exception($"LEXER_ERROR: Token \'{lexer.at().ToString()}\' unrecognised");
                 }
             }
 
