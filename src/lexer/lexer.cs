@@ -19,6 +19,7 @@ namespace LuneDB
                 (new Regex(@"\s+", RegexOptions.Compiled), Token.TokenType.WHITESPACE),
                 (new Regex(@"\d+", RegexOptions.Compiled), Token.TokenType.NUMBER),
                 (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled), Token.TokenType.IDENTIFIER),
+                (new Regex(@"[(]"), Token.TokenType.LEFT_PAREN)
             };
         }
         public void advance(int amount)
@@ -101,8 +102,7 @@ namespace LuneDB
                 }
                 if (!matched)
                 {
-                    lexer.advance(1);
-                    lexer.push(new Token(Token.TokenType.ERROR, lexer.at().ToString()));
+                    throw new Exception($"LEXER_ERROR: Token \' {lexer.at().ToString()} \' unrecognised");
                 }
             }
 
