@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace LuneDB
+namespace LuneDB.Lexer
 {
     public class Lexer
     {

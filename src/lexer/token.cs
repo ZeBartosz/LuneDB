@@ -1,4 +1,4 @@
-namespace LuneDB
+namespace LuneDB.Lexer
 {
     public class Token
     {
