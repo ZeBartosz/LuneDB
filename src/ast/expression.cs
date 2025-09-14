@@ -2,7 +2,7 @@ namespace LuneDB
 {
 
     // Literal Expressions
-    public struct NumberExpr : IExpr
+    public struct NumberExpr : ast.IExpr
     {
         public double value;
 
@@ -14,7 +14,7 @@ namespace LuneDB
         public void expr() { }
     }
 
-    public struct StringExpr : IExpr
+    public struct StringExpr : ast.IExpr
     {
         public string value;
 
@@ -27,13 +27,13 @@ namespace LuneDB
     }
 
     // Complex Expressions
-    public struct BinaryExpr : IExpr
+    public struct BinaryExpr : ast.IExpr
     {
-        public IExpr left;
+        public ast.IExpr left;
         public Lexer token;
-        public IExpr right;
+        public ast.IExpr right;
 
-        public BinaryExpr(IExpr left, Lexer token, IExpr right)
+        public BinaryExpr(ast.IExpr left, Lexer token, ast.IExpr right)
         {
             this.left = left;
             this.token = token;

@@ -1,4 +1,4 @@
-namespace LuneDB
+namespace LuneDB.ast
 {
     public interface IStmt
     {
