@@ -28,8 +28,8 @@ namespace LuneDB
             EOF,
         }
 
-        public TokenType Type { get; set; }
-        public string Value { get; set; }
+        public TokenType Type { get; }
+        public string Value { get; }
 
         public Token(TokenType type, string value)
         {

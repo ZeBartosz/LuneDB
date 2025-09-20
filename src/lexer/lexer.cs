@@ -4,116 +4,88 @@ namespace LuneDB
 {
     public class Lexer
     {
-        public List<(Regex regex, Token.TokenType type)> patterns;
-        public List<Token> tokens;
-        public string input;
-        public int position;
 
-        public Lexer(string userInput)
-        {
-            input = userInput;
-            position = 0;
-            tokens = new List<Token>();
-            patterns = new List<(Regex, Token.TokenType)>
-            {
-                (new Regex(@"\s+", RegexOptions.Compiled), Token.TokenType.WHITESPACE),
-                (new Regex(@"\d+", RegexOptions.Compiled), Token.TokenType.NUMBER),
-                (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled), Token.TokenType.IDENTIFIER),
-                (new Regex(@"[(]"), Token.TokenType.LEFT_PAREN),
-                (new Regex(@"[)]"), Token.TokenType.RIGHT_PAREN),
-                (new Regex(@"[{]"), Token.TokenType.LEFT_BRACE),
-                (new Regex(@"[}]"), Token.TokenType.RIGHT_BRACE),
-                (new Regex(@"[[]"), Token.TokenType.LEFT_BRACKET),
-                (new Regex(@"[]]"), Token.TokenType.RIGHT_BRACKET),
+        private readonly string _input;
+        private readonly List<Token> _tokens = new();
+        private int _position = 0;
+        private static readonly List<(Regex regex, Token.TokenType type)> s_patterns =
+        new List<(Regex, Token.TokenType)>
+                    {
+                        (new Regex(@"\s+", RegexOptions.Compiled), Token.TokenType.WHITESPACE),
+                        (new Regex(@"\d+", RegexOptions.Compiled), Token.TokenType.NUMBER),
+                        (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled),
+                            Token.TokenType.IDENTIFIER),
+                        (new Regex(@"\(", RegexOptions.Compiled), Token.TokenType.LEFT_PAREN),
+                        (new Regex(@"\)", RegexOptions.Compiled), Token.TokenType.RIGHT_PAREN),
+                        (new Regex(@"\{", RegexOptions.Compiled), Token.TokenType.LEFT_BRACE),
+                        (new Regex(@"\}", RegexOptions.Compiled), Token.TokenType.RIGHT_BRACE),
+                        (new Regex(@"\[", RegexOptions.Compiled), Token.TokenType.LEFT_BRACKET),
+                        (new Regex(@"\]", RegexOptions.Compiled), Token.TokenType.RIGHT_BRACKET),
+                    };
 
-            };
-        }
-        public void advance(int amount)
-        {
-            position += amount;
-        }
+        public Lexer(string userInput) => _input = userInput;
+        public IReadOnlyList<Token> Tokens => _tokens.AsReadOnly();
 
-        public void push(Token token)
-        {
-            this.tokens.Add(token);
-        }
+        private void Advance(int amount) => _position += amount;
+        private void Push(Token token) => _tokens.Add(token);
+        private string At() => _input.Substring(_position, 1);
+        private bool Eof() => _position >= _input.Length;
+        private string Remainder() => _input.Substring(_position);
 
-        public string at()
-        {
-            return this.input.Substring(position, 1);
-        }
-
-        public bool eof()
-        {
-            return position >= input.Length;
-        }
-
-        public string remainder()
-        {
-            return input.Substring(position);
-        }
-
-        public override string ToString()
-        {
-            return $"Lexer(input='{input}', position={position}, tokens={tokens})";
-        }
+        public override string ToString() => $"Lexer(input='{_input}', position={_position}, tokens={_tokens})";
 
 
-        public Token.TokenType handleIndentifier(string value)
+        Token.TokenType HandleIdentifier(string value)
         {
             switch (value)
             {
-                case "CREATE":
-                    return Token.TokenType.CREATE;
-                case "TABLE":
-                    return Token.TokenType.TABLE;
-                default:
-                    return Token.TokenType.IDENTIFIER;
+                case "CREATE": return Token.TokenType.CREATE;
+                case "TABLE": return Token.TokenType.TABLE;
+                default: return Token.TokenType.IDENTIFIER;
             }
 
         }
 
-        public Lexer Tokenize()
+        public IReadOnlyList<Token> Tokenize()
         {
-            Lexer lexer = this;
-
-            while (!lexer.eof())
+            while (!Eof())
             {
                 bool matched = false;
 
-                foreach (var pattern in patterns)
+                foreach (var pattern in s_patterns)
                 {
-                    var match = pattern.regex.Match(this.input, position);
+                    var match = pattern.regex.Match(_input, _position);
 
-                    if (match.Success && match.Index == position)
+                    if (match.Success && match.Index == _position)
                     {
                         if (pattern.type == Token.TokenType.WHITESPACE || match.Length == 0)
                         {
-                            lexer.advance(match.Length);
+                            Advance(match.Length);
                             continue;
                         }
                         matched = true;
-                        lexer.advance(match.Length);
+                        Advance(match.Length);
 
                         if (pattern.type == Token.TokenType.IDENTIFIER)
                         {
-                            Token.TokenType type = handleIndentifier(match.Value);
-                            lexer.push(new Token(type, match.Value));
+                            Token.TokenType type = HandleIdentifier(match.Value);
+                            Push(new Token(type, match.Value));
                             break;
                         }
 
-                        lexer.push(new Token(pattern.type, match.Value));
+                        Push(new Token(pattern.type, match.Value));
                         break;
                     }
                 }
                 if (!matched)
                 {
-                    throw new Exception($"LEXER_ERROR: Token \'{lexer.at().ToString()}\' unrecognised");
+                    throw new Exception($"LEXER_ERROR: Token at position \' {_position} \'  \'{At().ToString()}\' unrecognised");
                 }
             }
 
-            lexer.push(new Token(Token.TokenType.EOF, "EOF"));
-            return lexer;
+            Push(new Token(Token.TokenType.EOF, "EOF"));
+
+            return Tokens;
         }
     }
 }

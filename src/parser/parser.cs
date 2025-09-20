@@ -2,23 +2,23 @@ namespace LuneDB
 {
     public class Parser
     {
-        public List<Token> tokens { get; }
-        public int pos { get; set; }
+        private IReadOnlyList<Token> _tokens { get; }
+        private int pos = 0;
 
-        public Parser(List<Token> tokens)
+        public Parser(IReadOnlyList<Token> tokens)
         {
-            this.tokens = tokens;
+            _tokens = tokens;
             this.pos = 0;
         }
 
         // Helpers
         public Token currentToken()
         {
-            if (pos >= tokens.Count)
+            if (pos >= _tokens.Count)
             {
                 return new Token(Token.TokenType.EOF, "eof");
             }
-            return tokens[pos];
+            return _tokens[pos];
 
         }
 
@@ -29,7 +29,7 @@ namespace LuneDB
 
         public Token advance()
         {
-            if (pos < tokens.Count) { pos++; }
+            if (pos < _tokens.Count) { pos++; }
 
 
             return currentToken();
@@ -37,7 +37,7 @@ namespace LuneDB
 
         public bool hasTokens()
         {
-            return pos < tokens.Count && currentTokenType() != Token.TokenType.EOF;
+            return pos < _tokens.Count && currentTokenType() != Token.TokenType.EOF;
         }
 
         public Token expectError(Token.TokenType expectedToken, string errorMsg)
@@ -55,7 +55,7 @@ namespace LuneDB
         public IStmt Parse()
         {
             GlobalLookup.createLookup();
-            Parser parser = new Parser(tokens);
+            Parser parser = new Parser(_tokens);
             StmtParser stmtParser = new StmtParser(parser);
             List<IStmt> body = new List<IStmt>();
 
