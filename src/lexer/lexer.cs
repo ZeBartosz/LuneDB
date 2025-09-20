@@ -4,7 +4,6 @@ namespace LuneDB
 {
     public class Lexer
     {
-
         private readonly string _input;
         private readonly List<Token> _tokens = new();
         private int _position = 0;
@@ -25,26 +24,6 @@ namespace LuneDB
 
         public Lexer(string userInput) => _input = userInput;
         public IReadOnlyList<Token> Tokens => _tokens.AsReadOnly();
-
-        private void Advance(int amount) => _position += amount;
-        private void Push(Token token) => _tokens.Add(token);
-        private string At() => _input.Substring(_position, 1);
-        private bool Eof() => _position >= _input.Length;
-        private string Remainder() => _input.Substring(_position);
-
-        public override string ToString() => $"Lexer(input='{_input}', position={_position}, tokens={_tokens})";
-
-
-        Token.TokenType HandleIdentifier(string value)
-        {
-            switch (value)
-            {
-                case "CREATE": return Token.TokenType.CREATE;
-                case "TABLE": return Token.TokenType.TABLE;
-                default: return Token.TokenType.IDENTIFIER;
-            }
-
-        }
 
         public IReadOnlyList<Token> Tokenize()
         {
@@ -87,5 +66,26 @@ namespace LuneDB
 
             return Tokens;
         }
+
+        // Helpers
+        private void Advance(int amount) => _position += amount;
+        private void Push(Token token) => _tokens.Add(token);
+        private string At() => _input.Substring(_position, 1);
+        private bool Eof() => _position >= _input.Length;
+        private string Remainder() => _input.Substring(_position);
+
+        public override string ToString() => $"Lexer(input='{_input}', position={_position}, tokens={_tokens})";
+
+        Token.TokenType HandleIdentifier(string value)
+        {
+            switch (value)
+            {
+                case "CREATE": return Token.TokenType.CREATE;
+                case "TABLE": return Token.TokenType.TABLE;
+                default: return Token.TokenType.IDENTIFIER;
+            }
+
+        }
+
     }
 }

@@ -3,36 +3,30 @@ namespace LuneDB
     public static class ExprParser
     {
         public static IExpr ParserIdendifierExpr(Parser p)
-        {
-            return new IdentifierExpr(p.advance().Value);
-        }
+            => new IdentifierExpr(p.Consume().Value);
 
-        public static IExpr ParseExpr(Parser p, Lookup.binding_power bp)
+        public static IExpr ParseExpr(Parser p, Lookup.BindingPower bp)
         {
-            Token.TokenType currentT = p.currentTokenType();
+            Token.TokenType currentT = p.PeekType();
 
             if (!GlobalLookup.nud_lu.TryGetValue(currentT, out var handler) || handler == null)
-            {
-                throw new Exception($"NUD HANDLER EXPECTED FOR TOKEN: {currentT.ToString()}");
-            }
+                throw new ParserException($"NUD HANDLER EXPECTED FOR TOKEN: {currentT.ToString()}");
 
             IExpr left = handler(p);
 
             while (true)
             {
-                Token.TokenType nextTok = p.currentTokenType();
+                Token.TokenType nextTok = p.PeekType();
 
                 if (!GlobalLookup.bp_lu.TryGetValue(nextTok, out var nextBp))
-                {
-                    nextBp = Lookup.binding_power.default_bp;
-                }
+                    nextBp = Lookup.BindingPower.DEFAULT;
 
                 if ((int)nextBp <= (int)bp) break;
 
                 if (!GlobalLookup.led_lu.TryGetValue(nextTok, out var ledHandler) || ledHandler == null)
-                    throw new Exception($"LED HANDLER EXPECTED FOR TOKEN: {nextTok}");
+                    throw new ParserException($"LED HANDLER EXPECTED FOR TOKEN: {nextTok}");
 
-                p.advance();
+                p.Consume();
 
                 left = ledHandler(p, left, nextBp);
             }

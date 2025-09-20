@@ -1,28 +1,20 @@
 namespace LuneDB
-
 {
-    public class StmtParser
+    public static class StmtParser
     {
-        private readonly Parser _parser;
-        public StmtParser(Parser parser) => _parser = parser;
-
-        public IStmt ParseStmt()
+        public static IStmt ParseStmt(Parser p)
         {
-            Token.TokenType currentT = _parser.currentTokenType();
+            Token.TokenType currentT = p.PeekType();
 
             if (GlobalLookup.stmt_lu.TryGetValue(currentT, out var handler))
-            {
-                return handler(_parser);
-            }
+                return handler(p);
 
-            IStmt expression = ParseExprStmt();
-
-            return expression;
+            return ParseExprStmt(p);
         }
 
-        public IStmt ParseExprStmt()
+        public static IStmt ParseExprStmt(Parser p)
         {
-            IExpr expression = ExprParser.ParseExpr(_parser, Lookup.binding_power.default_bp);
+            IExpr expression = ExprParser.ParseExpr(p, Lookup.BindingPower.DEFAULT);
 
             return new ExpressionStmt(expression);
         }

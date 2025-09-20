@@ -1,55 +1,60 @@
 namespace LuneDB
 {
+    public class ParserException : Exception
+    {
+        public ParserException(string message) : base(message) { }
+    }
+
     public class Parser
     {
-        private IReadOnlyList<Token> _tokens { get; }
-        private int _pos = 0;
+        private readonly IReadOnlyList<Token> _tokens;
+        private int _position = 0;
 
-        public Parser(IReadOnlyList<Token> tokens) => _tokens = tokens;
-
-        // Helpers
-        public bool HasTokens() => _pos < _tokens.Count && CurrentTokenType() != Token.TokenType.EOF;
-        public Token.TokenType CurrentTokenType() => CurrentToken().Type;
-
-        public Token CurrentToken()
-        {
-            if (_pos >= _tokens.Count) return new Token(Token.TokenType.EOF, "eof");
-
-            return _tokens[_pos];
-        }
-
-        public Token Advance()
-        {
-            if (_pos < _tokens.Count) _pos++;
-
-            return CurrentToken();
-        }
-
-
-        public Token ExpectError(Token.TokenType expectedToken, string errorMsg)
-        {
-            Token currentToken = CurrentToken();
-
-            if (currentToken.Type != expectedToken)
-                throw new Exception($"expected \"{expectedToken}\", but received \"{currentToken.Type}\"");
-
-            return Advance();
-        }
+        public Parser(IReadOnlyList<Token> tokens) => _tokens = tokens ?? Array.Empty<Token>();
 
         public IStmt Parse()
         {
-            GlobalLookup.createLookup();
+            GlobalLookup.CreateLookup();
 
-            Parser parser = new Parser(_tokens);
             List<IStmt> body = new List<IStmt>();
 
-            while (parser.HasTokens())
-            {
-                IStmt stmt = StmtParser.ParseStmt(parser);
-                body.Add(stmt);
-            }
+            while (HasMoreTokens())
+                body.Add(StmtParser.ParseStmt(this));
 
             return new BlockStmt(body);
+        }
+
+        // Helpers
+        public bool HasMoreTokens() => _position < _tokens.Count && PeekType() != Token.TokenType.EOF;
+        public Token.TokenType PeekType() => Peek().Type;
+
+        public Token Peek()
+        {
+            if (_position >= _tokens.Count) return new Token(Token.TokenType.EOF, "EOF");
+
+            return _tokens[_position];
+        }
+
+        public Token Consume()
+        {
+            Token previousToken = Peek();
+            if (_position < _tokens.Count) _position++;
+
+            return previousToken;
+        }
+
+        public Token ExpectToken(Token.TokenType expectedToken, string? errorMessage = null)
+        {
+            Token currentToken = Peek();
+
+            if (currentToken.Type != expectedToken)
+            {
+                string error = errorMessage ?? $"EXPECTATION ERROR: Expected \"{expectedToken}\", but received \"{currentToken.Type}\" at position {_position}";
+
+                throw new ParserException(error);
+            }
+
+            return Consume();
         }
     }
 }
