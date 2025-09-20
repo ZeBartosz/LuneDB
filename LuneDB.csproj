@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Compile Remove="LuneDB.Tests\\**\\*.cs" />
+        <Compile Remove="tests\\**\\*.cs" />
     </ItemGroup>
 
 </Project>

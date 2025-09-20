@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuneDB", "LuneDB.csproj", "{F767371F-2328-488E-A184-77C4F9194D00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuneDB.Tests", "LuneDB.Tests\LuneDB.Tests.csproj", "{CE7E43C8-A25F-4811-BFC6-37C818C9DEDD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LuneDB.Tests", "Tests\LuneDB.Tests.csproj", "{CE7E43C8-A25F-4811-BFC6-37C818C9DEDD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
