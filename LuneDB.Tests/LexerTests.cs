@@ -1,4 +1,3 @@
-
 namespace LuneDB.Tests
 {
     public class LexerTests
