@@ -5,7 +5,7 @@ namespace LuneDB
         public List<Token> tokens { get; }
         public int pos { get; set; }
 
-        Parser(List<Token> tokens)
+        public Parser(List<Token> tokens)
         {
             this.tokens = tokens;
             this.pos = 0;
@@ -37,7 +37,7 @@ namespace LuneDB
 
         public bool hasTokens()
         {
-            return pos < tokens.Count && currentTokenType() == Token.TokenType.EOF;
+            return pos < tokens.Count && currentTokenType() != Token.TokenType.EOF;
         }
 
         public Token expectError(Token.TokenType expectedToken, string errorMsg)
@@ -46,14 +46,15 @@ namespace LuneDB
 
             if (currentToken.Type != expectedToken)
             {
-                new Exception($"expected \"{expectedToken}\", but received \"{currentToken.Type}\"");
+                throw new Exception($"expected \"{expectedToken}\", but received \"{currentToken.Type}\"");
             }
 
             return advance();
         }
 
-        public IStmt parse(List<Token> tokens)
+        public IStmt Parse()
         {
+            GlobalLookup.createLookup();
             Parser parser = new Parser(tokens);
             StmtParser stmtParser = new StmtParser(parser);
             List<IStmt> body = new List<IStmt>();
