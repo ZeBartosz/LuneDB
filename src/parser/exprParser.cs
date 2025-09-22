@@ -2,7 +2,7 @@ namespace LuneDB
 {
     public static class ExprParser
     {
-        public static IExpr ParserIdendifierExpr(Parser p)
+        public static IExpr ParserIdendifier(Parser p)
             => new IdentifierExpr(p.Consume().Value);
 
         public static IExpr ParseExpr(Parser p, Lookup.BindingPower bp)
