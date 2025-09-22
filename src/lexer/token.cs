@@ -5,8 +5,10 @@ namespace LuneDB
         public enum TokenType
         {
             CREATE,
+            DATABASE,
             TABLE,
 
+            SEMICOLUMN,
             COLUMN,
             KEYWORD,
             IDENTIFIER,

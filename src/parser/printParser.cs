@@ -19,6 +19,10 @@ namespace LuneDB
                     foreach (var s in bs.body)
                         PrintStmt(s, indent + 1);
                     break;
+                case CreateStmt cs:
+                    Console.WriteLine($"{Indent(indent)}CreateStmt: {cs.type}");
+                    PrintExpr(cs.name, indent + 1);
+                    break;
                 default:
                     Console.WriteLine($"{Indent(indent)}UnknownStmt: {stmt.GetType().Name}");
                     break;

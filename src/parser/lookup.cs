@@ -51,7 +51,8 @@ namespace LuneDB
 
         public static void CreateLookup()
         {
-            LookupTable.RegisterNud(Token.TokenType.IDENTIFIER, ExprParser.ParserIdendifierExpr);
+            LookupTable.RegisterNud(Token.TokenType.IDENTIFIER, ExprParser.ParserIdendifier);
+            LookupTable.RegisterStmt(Token.TokenType.CREATE, StmtParser.ParseCreate);
         }
     }
 

@@ -12,8 +12,8 @@ namespace LuneDB
                     {
                         (new Regex(@"\s+", RegexOptions.Compiled), Token.TokenType.WHITESPACE),
                         (new Regex(@"\d+", RegexOptions.Compiled), Token.TokenType.NUMBER),
-                        (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled),
-                            Token.TokenType.IDENTIFIER),
+                        (new Regex(@"[a-zA-Z_][a-zA-Z0-9_]*", RegexOptions.Compiled), Token.TokenType.IDENTIFIER),
+                        (new Regex(@"\;", RegexOptions.Compiled), Token.TokenType.SEMICOLUMN),
                         (new Regex(@"\(", RegexOptions.Compiled), Token.TokenType.LEFT_PAREN),
                         (new Regex(@"\)", RegexOptions.Compiled), Token.TokenType.RIGHT_PAREN),
                         (new Regex(@"\{", RegexOptions.Compiled), Token.TokenType.LEFT_BRACE),
@@ -81,6 +81,7 @@ namespace LuneDB
             switch (value)
             {
                 case "CREATE": return Token.TokenType.CREATE;
+                case "DATABASE": return Token.TokenType.DATABASE;
                 case "TABLE": return Token.TokenType.TABLE;
                 default: return Token.TokenType.IDENTIFIER;
             }

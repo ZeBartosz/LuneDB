@@ -5,7 +5,7 @@ namespace LuneDB
 
         public static void Main(string[] args)
         {
-            string userinput = "this is a win";
+            string userinput = "CREATE DATABASE db;";
 
             IReadOnlyList<Token> tokens = new Lexer(userinput).Tokenize();
             foreach (Token token in tokens) Console.WriteLine(token.ToString());

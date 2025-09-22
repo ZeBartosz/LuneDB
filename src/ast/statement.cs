@@ -13,4 +13,15 @@ namespace LuneDB
         public BlockStmt(List<IStmt> body) => this.body = body;
         public void stmt() { }
     }
+    public struct CreateStmt : IStmt
+    {
+        public Token.TokenType type;
+        public IdentifierExpr name;
+        public CreateStmt(Token.TokenType type, IdentifierExpr name)
+        {
+            this.type = type;
+            this.name = name;
+        }
+        public void stmt() { }
+    }
 }
